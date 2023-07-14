@@ -158,12 +158,12 @@ export const getConfig = (): ConfigType | null => {
         OCO_OPENAI_API_KEY: process.env.OCO_OPENAI_API_KEY,
         OCO_OPENAI_MAX_TOKENS: process.env.OCO_OPENAI_MAX_TOKENS
             ? Number(process.env.OCO_OPENAI_MAX_TOKENS)
-            : undefined,
+            : 0,
         OCO_OPENAI_BASE_PATH: process.env.OCO_OPENAI_BASE_PATH,
-        OCO_DESCRIPTION: process.env.OCO_DESCRIPTION === "true" ? true : false,
-        OCO_EMOJI: process.env.OCO_EMOJI === "true" ? true : false,
+        OCO_DESCRIPTION: process.env.OCO_DESCRIPTION === "false" ? false : true,
+        OCO_EMOJI: process.env.OCO_EMOJI === "false" ? false : true,
         OCO_MODEL: process.env.OCO_MODEL || "gpt-3.5-turbo-16k",
-        OCO_LANGUAGE: process.env.OCO_LANGUAGE || "en",
+        OCO_LANGUAGE: process.env.OCO_LANGUAGE || "id_ID",
         OCO_MESSAGE_TEMPLATE_PLACEHOLDER:
             process.env.OCO_MESSAGE_TEMPLATE_PLACEHOLDER || "$msg",
     };
@@ -245,7 +245,7 @@ export const configCommand = command(
                     outro(`${key}=${config[key as keyof typeof config]}`);
                 }
             } else if (mode === CONFIG_MODES.set) {
-                await setConfig(
+                setConfig(
                     keyValues.map(
                         (keyValue) => keyValue.split("=") as [string, string]
                     )
