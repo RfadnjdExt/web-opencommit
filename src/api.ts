@@ -99,6 +99,7 @@ class OpenAi {
     ) => {
         const chatRequestJSON = JSON.stringify(
             JSON.stringify({
+                ...createChatCompletionRequest,
                 action: "next",
                 messages: createChatCompletionRequest.messages.map(
                     (message) => ({
@@ -117,7 +118,6 @@ class OpenAi {
                     })
                 ),
                 parent_message_id: randomUUID(),
-                model: "text-davinci-002-render-sha",
                 timezone_offset_min: -420,
                 history_and_training_disabled: false,
                 arkose_token: null,
