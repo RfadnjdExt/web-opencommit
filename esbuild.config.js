@@ -1,20 +1,21 @@
-import { build } from "esbuild";
 import fs from "fs";
+import esbuild from "esbuild";
 
-await build({
+const buildOptions = {
     entryPoints: ["./src/cli.ts"],
     bundle: true,
     platform: "node",
     format: "cjs",
     outfile: "./out/cli.cjs",
-});
+};
 
-const wasmFile = fs.readFileSync(
-    "./node_modules/@dqbd/tiktoken/lite/tiktoken_bg.wasm"
-);
+esbuild.buildSync(buildOptions);
 
-fs.writeFileSync("./out/tiktoken_bg.wasm", wasmFile);
-fs.writeFileSync(
-    "./out/browser-code.js",
-    fs.readFileSync("./src/browser-code.js")
-);
+const sourceFilePath = "./src/chat_api_interaction.js";
+const destinationFilePath = "./out/chat_api_interaction.js";
+
+try {
+    fs.copyFileSync(sourceFilePath, destinationFilePath);
+} catch (err) {
+    console.error("An error occurred while copying the file:", err);
+}

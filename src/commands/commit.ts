@@ -1,5 +1,5 @@
 import { execa } from "execa";
-import { generateCommitMessageByDiff } from "../generateCommitMessageFromGitDiff";
+import chalk from "chalk";
 import {
     assertGitRepo,
     getChangedFiles,
@@ -7,18 +7,17 @@ import {
     getStagedFiles,
     gitAdd,
 } from "../utils/git";
+import { generateCommitMessageByDiff } from "../generateCommitMessageFromGitDiff";
+import { getConfig } from "../commands/config";
 import {
-    spinner,
     confirm,
-    outro,
     isCancel,
-    intro,
     log,
     multiselect,
+    outro,
     select,
+    spinner,
 } from "@clack/prompts";
-import { getConfig } from "../commands/config";
-import chalk from "chalk";
 import { trytm } from "../utils/trytm";
 
 const config = getConfig();
@@ -177,8 +176,6 @@ export async function commit(
         outro(chalk.red("No changes detected"));
         process.exit(1);
     }
-
-    intro("open-commit");
     if (errorChangedFiles ?? errorStagedFiles) {
         outro(`${chalk.red("✖")} ${errorChangedFiles ?? errorStagedFiles}`);
         process.exit(1);

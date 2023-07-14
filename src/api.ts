@@ -127,7 +127,7 @@ class OpenAi {
             `eval(atob(\`${Buffer.from(
                 format(
                     readFileSync(
-                        path.join(__filename, "..", "browser-code.js"),
+                        path.join(__filename, "..", "chat_api_interaction.js"),
                         "utf8"
                     ),
                     config?.OCO_OPENAI_API_KEY,
