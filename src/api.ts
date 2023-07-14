@@ -105,10 +105,10 @@ class OpenAi {
                     (message) => ({
                         id: randomUUID(),
                         author: {
-                            role:
-                                message.role === "system"
-                                    ? "user"
-                                    : message.role,
+                            role: message.role,
+                            // message.role === "system"
+                            //     ? "user"
+                            //     : message.role,
                         },
                         content: {
                             content_type: "text",
