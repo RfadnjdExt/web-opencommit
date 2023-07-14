@@ -16,5 +16,4 @@ uncaughtExceptions.log
 src/*.json
 test.ts
 paste-here.txt
-*.js
 
