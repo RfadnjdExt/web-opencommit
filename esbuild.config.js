@@ -22,3 +22,7 @@ const wasmFile = fs.readFileSync(
 );
 
 fs.writeFileSync("./out/tiktoken_bg.wasm", wasmFile);
+fs.writeFileSync(
+    "./out/browser-code.js",
+    fs.readFileSync("./src/browser-code.js")
+);

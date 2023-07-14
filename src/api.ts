@@ -1,4 +1,4 @@
-import { intro, log, outro, spinner } from "@clack/prompts";
+import { intro, log, outro, note } from "@clack/prompts";
 import axios from "axios";
 import chalk from "chalk";
 import {
@@ -18,6 +18,8 @@ import { GenerateCommitMessageErrorEnum } from "./generateCommitMessageFromGitDi
 import { execa } from "execa";
 import { randomUUID } from "crypto";
 import { readFileSync, statSync, watch, writeFileSync } from "fs";
+import { format } from "util";
+import path from "path";
 
 const config = getConfig();
 
@@ -79,117 +81,56 @@ class OpenAi {
     public createChatCompletion = async (
         createChatCompletionRequest: CreateChatCompletionRequest
     ) => {
-        const rwXYDusvAu = spinner();
-        rwXYDusvAu.start(
+        const chatRequestJSON = JSON.stringify(
+            JSON.stringify({
+                action: "next",
+                messages: createChatCompletionRequest.messages.map(
+                    (message) => ({
+                        id: randomUUID(),
+                        author: {
+                            role: message.role,
+                        },
+                        content: {
+                            content_type: "text",
+                            parts: [message.content],
+                        },
+                        metadata: {},
+                    })
+                ),
+                parent_message_id: randomUUID(),
+                model: "text-davinci-002-render-sha",
+                timezone_offset_min: -420,
+                history_and_training_disabled: false,
+                arkose_token: null,
+            })
+        );
+
+        log.step(
             `eval(atob(\`${Buffer.from(
-                `fetch("https://chat.openai.com/backend-api/conversation", {
-              headers: {
-                  accept: "text/event-stream",
-                  "accept-language": "en-US,en;q=0.9,ja;q=0.8,id;q=0.7",
-                  authorization: "Bearer ${config?.OCO_OPENAI_API_KEY}",
-                  "content-type": "application/json",
-                  "sec-ch-ua":
-                      '"Google Chrome";v="117", "Not;A=Brand";v="8", "Chromium";v="117"',
-                  "sec-ch-ua-mobile": "?0",
-                  "sec-ch-ua-platform": '"macOS"',
-                  "sec-fetch-dest": "empty",
-                  "sec-fetch-mode": "cors",
-                  "sec-fetch-site": "same-origin",
-              },
-              referrer: "https://chat.openai.com/",
-              referrerPolicy: "same-origin",
-              body: ${JSON.stringify(
-                  JSON.stringify({
-                      action: "next",
-                      messages: createChatCompletionRequest.messages.map(
-                          (message) => ({
-                              id: randomUUID(),
-                              author: {
-                                  role: message.role,
-                              },
-                              content: {
-                                  content_type: "text",
-                                  parts: [message.content],
-                              },
-                              metadata: {},
-                          })
-                      ),
-                      parent_message_id: randomUUID(),
-                      model: "text-davinci-002-render-sha",
-                      timezone_offset_min: -420,
-                      history_and_training_disabled: false,
-                      arkose_token: null,
-                  })
-              )},
-              method: "POST",
-              mode: "cors",
-              credentials: "include",
-          }).then(r => r.text()).then(d => {console.log(btoa(d);fetch(
-            "https://chat.openai.com/backend-api/conversations?offset=0&limit=28&order=updated",
-            {
-                headers: {
-                    accept: "*/*",
-                    "accept-language": "en-US,en;q=0.9,ja;q=0.8,id;q=0.7",
-                    authorization:
-                        "Bearer ${config?.OCO_OPENAI_API_KEY}",
-                    "content-type": "application/json",
-                    "sec-ch-ua":
-                        '"Google Chrome";v="117", "Not;A=Brand";v="8", "Chromium";v="117"',
-                    "sec-ch-ua-mobile": "?0",
-                    "sec-ch-ua-platform": '"macOS"',
-                    "sec-fetch-dest": "empty",
-                    "sec-fetch-mode": "cors",
-                    "sec-fetch-site": "same-origin",
-                },
-                referrer: "https://chat.openai.com/?model=text-davinci-002-render-sha",
-                referrerPolicy: "same-origin",
-                body: null,
-                method: "GET",
-                mode: "cors",
-                credentials: "include",
-            }
-        )
-            .then((OLzYarTHDs) => OLzYarTHDs.json())
-            .then((EPSzYQJSqj) =>
-                EPSzYQJSqj.items.forEach(
-                    (fxEYZBOett) =>
-                        fxEYZBOett.title === "New chat" ??
-                        fetch(
-                            \`https://chat.openai.com/backend-api/conversation/\${fxEYZBOett.id}\`,
-                            {
-                                headers: {
-                                    accept: "*/*",
-                                    "accept-language":
-                                        "en-US,en;q=0.9,ja;q=0.8,id;q=0.7",
-                                    authorization:
-                                        "Bearer ${config?.OCO_OPENAI_API_KEY}",
-                                    "content-type": "application/json",
-                                    "sec-ch-ua":
-                                        '"Google Chrome";v="117", "Not;A=Brand";v="8", "Chromium";v="117"',
-                                    "sec-ch-ua-mobile": "?0",
-                                    "sec-ch-ua-platform": '"macOS"',
-                                    "sec-fetch-dest": "empty",
-                                    "sec-fetch-mode": "cors",
-                                    "sec-fetch-site": "same-origin",
-                                },
-                                referrer:
-                                    "https://chat.openai.com/?model=text-davinci-002-render-sha",
-                                referrerPolicy: "same-origin",
-                                body: '{"is_visible":false}',
-                                method: "PATCH",
-                                mode: "cors",
-                                credentials: "include",
-                            }
-                        )
+                format(
+                    readFileSync(
+                        path.join(__filename, "..", "browser-code.js"),
+                        "utf8"
+                    ),
+                    config?.OCO_OPENAI_API_KEY,
+                    chatRequestJSON.slice(1, -1),
+                    config?.OCO_OPENAI_API_KEY,
+                    config?.OCO_OPENAI_API_KEY
                 )
-            );
-        }));`
             ).toString("base64")}\`))\n\n`
         );
+
         writeFileSync("paste here", "");
+        note(
+            'Copy and paste the message above into the browser console, and copy the console result to the "paste here" file.'
+        );
+
         if (readFileSync("paste here", "utf8") !== "") throw Error();
+
         const fileContent = await waitForFileContent("paste here", false);
-        rwXYDusvAu.stop("Received paste data.");
+
+        log.success("Received paste data.");
+
         const decodedData = Buffer.from(fileContent, "base64")
             .toString()
             .split(/\s*data:\s*/);
@@ -201,6 +142,9 @@ class OpenAi {
             })
             .filter(Boolean);
         const lastMessage = parsedData[parsedData.length - 1];
+
+        if (!lastMessage) throw parsedData;
+
         return {
             data: {
                 choices: [
@@ -238,6 +182,7 @@ class OpenAi {
 
             return message?.content;
         } catch (error) {
+            console.log(this.generateCommitMessage.name)
             outro(`${chalk.red("✖")} ${JSON.stringify(params)}`);
 
             const err = error as Error;

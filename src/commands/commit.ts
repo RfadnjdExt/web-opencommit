@@ -42,9 +42,6 @@ const generateCommitMessageFromGitDiff = async (
 ): Promise<void> => {
     const messageTemplate = checkMessageTemplate(extraArgs);
     await assertGitRepo();
-
-    const commitSpinner = spinner();
-    commitSpinner.start("Generating the commit message");
     try {
         let commitMessage = await generateCommitMessageByDiff(diff);
 
@@ -54,7 +51,6 @@ const generateCommitMessageFromGitDiff = async (
                 commitMessage
             );
         }
-        commitSpinner.stop("📝 Commit message generated");
 
         outro(
             `Commit message:
@@ -144,8 +140,7 @@ ${chalk.grey("——————————————————")}`
             }
         }
     } catch (error) {
-        commitSpinner.stop("📝 Commit message generated");
-
+        console.log(error)
         const err = error as Error;
         outro(`${chalk.red("✖")} ${err?.message || err}`);
         process.exit(1);
@@ -233,6 +228,7 @@ export async function commit(
     );
 
     if (generateCommitError) {
+        console.log(commit.name)
         outro(`${chalk.red("✖")} ${generateCommitError}`);
         process.exit(1);
     }

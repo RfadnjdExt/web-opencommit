@@ -98,6 +98,7 @@ export const generateCommitMessageByDiff = async (
             ADJUSTMENT_FACTOR -
             INIT_MESSAGES_PROMPT_LENGTH -
             config?.OCO_OPENAI_MAX_TOKENS;
+            console.log(diff)
         if (tokenCount(diff) >= MAX_REQUEST_TOKENS) {
             const commitMessagePromises =
                 await getCommitMsgsPromisesFromFileDiffs(
@@ -126,7 +127,7 @@ export const generateCommitMessageByDiff = async (
     }
 };
 
-function getMessagesPromisesByChangesInFile(
+async function getMessagesPromisesByChangesInFile(
     fileDiff: string,
     separator: string,
     maxChangeLength: number
@@ -140,8 +141,8 @@ function getMessagesPromisesByChangesInFile(
         fileDiffByLines.map((line) => hunkHeaderSeparator + line),
         maxChangeLength
     );
-
     const lineDiffsWithHeader = [];
+
     for (const change of mergedChanges) {
         const totalChange = fileHeader + change;
         if (tokenCount(totalChange) > maxChangeLength) {
@@ -153,13 +154,16 @@ function getMessagesPromisesByChangesInFile(
         }
     }
 
-    const commitMsgsFromFileLineDiffs = lineDiffsWithHeader.map((lineDiff) => {
+    const commitMsgsFromFileLineDiffs = [];
+
+    for (const lineDiff of lineDiffsWithHeader) {
         const messages = generateCommitMessageChatCompletionPrompt(
             separator + lineDiff
         );
-
-        return api.generateCommitMessage(messages);
-    });
+        commitMsgsFromFileLineDiffs.push(
+            await api.generateCommitMessage(messages)
+        );
+    }
 
     return commitMsgsFromFileLineDiffs;
 }
@@ -215,7 +219,7 @@ export async function getCommitMsgsPromisesFromFileDiffs(
     for (const fileDiff of mergedFilesDiffs) {
         if (tokenCount(fileDiff) >= maxDiffLength) {
             // if file-diff is bigger than gpt context — split fileDiff into lineDiff
-            const messagesPromises = getMessagesPromisesByChangesInFile(
+            const messagesPromises = await getMessagesPromisesByChangesInFile(
                 fileDiff,
                 separator,
                 maxDiffLength

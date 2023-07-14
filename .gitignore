@@ -12,3 +12,4 @@ src/*.json
 .idea
 test.ts
 paste here
+out
