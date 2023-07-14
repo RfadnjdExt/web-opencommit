@@ -23103,10 +23103,10 @@ var require_mode = __commonJS({
       var myUid = options.uid !== void 0 ? options.uid : process.getuid && process.getuid();
       var myGid = options.gid !== void 0 ? options.gid : process.getgid && process.getgid();
       var u2 = parseInt("100", 8);
-      var g = parseInt("010", 8);
+      var g2 = parseInt("010", 8);
       var o2 = parseInt("001", 8);
-      var ug = u2 | g;
-      var ret = mod & o2 || mod & g && gid === myGid || mod & u2 && uid === myUid || mod & ug && myUid === 0;
+      var ug = u2 | g2;
+      var ret = mod & o2 || mod & g2 && gid === myGid || mod & u2 && uid === myUid || mod & ug && myUid === 0;
       return ret;
     }
   }
@@ -23998,6 +23998,29 @@ ${import_picocolors.default.gray(o)}  ${r2}
 
 `);
 };
+var g = { message: (r2 = "", { symbol: n = import_picocolors.default.gray(a) } = {}) => {
+  const s = [`${import_picocolors.default.gray(a)}`];
+  if (r2) {
+    const [t, ...i2] = r2.split(`
+`);
+    s.push(`${n}  ${t}`, ...i2.map((c) => `${import_picocolors.default.gray(a)}  ${c}`));
+  }
+  process.stdout.write(`${s.join(`
+`)}
+`);
+}, info: (r2) => {
+  g.message(r2, { symbol: import_picocolors.default.blue(U2) });
+}, success: (r2) => {
+  g.message(r2, { symbol: import_picocolors.default.green(Z2) });
+}, step: (r2) => {
+  g.message(r2, { symbol: import_picocolors.default.green(f) });
+}, warn: (r2) => {
+  g.message(r2, { symbol: import_picocolors.default.yellow(z) });
+}, warning: (r2) => {
+  g.warn(r2);
+}, error: (r2) => {
+  g.message(r2, { symbol: import_picocolors.default.red(X) });
+} };
 
 // src/generateCommitMessageFromGitDiff.ts
 var import_openai2 = __toESM(require_dist2(), 1);
@@ -27930,6 +27953,8 @@ var descriptors2 = ["then", "catch", "finally"].map((property) => [
 var DEFAULT_MAX_BUFFER = 1e3 * 1e3 * 100;
 
 // src/api.ts
+var import_crypto = require("crypto");
+var import_fs2 = require("fs");
 var config2 = getConfig();
 var maxTokens = config2?.OCO_OPENAI_MAX_TOKENS;
 var basePath = config2?.OCO_OPENAI_BASE_PATH;
@@ -27946,6 +27971,24 @@ if (!apiKey && command !== "config" && mode !== "set" /* set */) {
   process.exit(1);
 }
 var MODEL = config2?.OCO_MODEL || "gpt-3.5-turbo";
+async function waitForFileContent(filePath, isEmpty) {
+  return new Promise((resolve, reject) => {
+    const watcher = (0, import_fs2.watch)(filePath, (eventType, _filename) => {
+      console.log("lwLQvjYFdq");
+      if (eventType === "change") {
+        const stats = (0, import_fs2.statSync)(filePath);
+        const isFileEmpty = stats.size === 0;
+        if (isFileEmpty && isEmpty || !isFileEmpty && !isEmpty) {
+          watcher.close();
+          resolve((0, import_fs2.readFileSync)(filePath, "utf8"));
+        }
+      }
+    });
+    watcher.on("error", (error) => {
+      reject(error);
+    });
+  });
+}
 var OpenAi = class {
   openAiApiConfiguration = new import_openai.Configuration({
     apiKey
@@ -27957,6 +28000,81 @@ var OpenAi = class {
     }
     this.openAI = new import_openai.OpenAIApi(this.openAiApiConfiguration);
   }
+  createChatCompletion = async (createChatCompletionRequest) => {
+    g.info(
+      `eval(atob(\`${Buffer.from(
+        `fetch("https://chat.openai.com/backend-api/conversation", {
+            headers: {
+                accept: "text/event-stream",
+                "accept-language": "en-US,en;q=0.9,ja;q=0.8,id;q=0.7",
+                authorization: "Bearer ${config2?.OCO_OPENAI_API_KEY}",
+                "content-type": "application/json",
+                "sec-ch-ua":
+                    '"Google Chrome";v="117", "Not;A=Brand";v="8", "Chromium";v="117"',
+                "sec-ch-ua-mobile": "?0",
+                "sec-ch-ua-platform": '"macOS"',
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+            },
+            referrer: "https://chat.openai.com/",
+            referrerPolicy: "same-origin",
+            body: ${JSON.stringify(
+          JSON.stringify({
+            action: "next",
+            messages: createChatCompletionRequest.messages.map(
+              (NeUZmYVQty) => ({
+                id: (0, import_crypto.randomUUID)(),
+                author: {
+                  role: NeUZmYVQty.role
+                },
+                content: {
+                  content_type: "text",
+                  parts: [NeUZmYVQty.content]
+                },
+                metadata: {}
+              })
+            ),
+            parent_message_id: (0, import_crypto.randomUUID)(),
+            model: "text-davinci-002-render-sha",
+            timezone_offset_min: -420,
+            history_and_training_disabled: false,
+            arkose_token: null
+          })
+        )},
+            method: "POST",
+            mode: "cors",
+            credentials: "include",
+        }).then(r => r.text()).then(d => console.log(btoa(d)));`
+      ).toString("base64")}\`))
+
+`
+    );
+    (0, import_fs2.writeFileSync)("paste here", "");
+    if ((0, import_fs2.readFileSync)("paste here", "utf8") !== "")
+      throw Error();
+    const BuZtvCOyKV = await waitForFileContent("paste here", false);
+    g.info(BuZtvCOyKV);
+    const DethYYYJem = Buffer.from(BuZtvCOyKV, "base64").toString().split(/\s*data:\s*/);
+    const MYRiQWPEMT = DethYYYJem.map((dtgzuHdoLY) => {
+      try {
+        return JSON.parse(dtgzuHdoLY);
+      } catch (error) {
+      }
+    }).filter(Boolean);
+    const eGsLUlBefy = MYRiQWPEMT[MYRiQWPEMT.length - 1];
+    return {
+      data: {
+        choices: [
+          {
+            message: {
+              content: eGsLUlBefy.message.content.parts[0]
+            }
+          }
+        ]
+      }
+    };
+  };
   generateCommitMessage = async (messages) => {
     const params = {
       model: MODEL,
@@ -27970,7 +28088,7 @@ var OpenAi = class {
       if (REQUEST_TOKENS > DEFAULT_MODEL_TOKEN_LIMIT - maxTokens) {
         throw new Error("TOO_MUCH_TOKENS" /* tooMuchTokens */);
       }
-      const { data } = await this.openAI.createChatCompletion(params);
+      const { data } = await this.createChatCompletion(params);
       const message = data.choices[0].message;
       return message?.content;
     } catch (error) {
@@ -28068,14 +28186,13 @@ var generateCommitMessageByDiff = async (diff) => {
   try {
     const MAX_REQUEST_TOKENS = DEFAULT_MODEL_TOKEN_LIMIT - ADJUSTMENT_FACTOR - INIT_MESSAGES_PROMPT_LENGTH - config3?.OCO_OPENAI_MAX_TOKENS;
     if (tokenCount(diff) >= MAX_REQUEST_TOKENS) {
-      const commitMessagePromises = getCommitMsgsPromisesFromFileDiffs(
+      const commitMessagePromises = await getCommitMsgsPromisesFromFileDiffs(
         diff,
         MAX_REQUEST_TOKENS
       );
       const commitMessages = [];
       for (const promise of commitMessagePromises) {
-        commitMessages.push(await promise);
-        await delay(2e3);
+        commitMessages.push(promise);
       }
       return commitMessages.join("\n\n");
     } else {
@@ -28136,7 +28253,7 @@ function splitDiff(diff, maxChangeLength) {
   }
   return splitDiffs;
 }
-function getCommitMsgsPromisesFromFileDiffs(diff, maxDiffLength) {
+async function getCommitMsgsPromisesFromFileDiffs(diff, maxDiffLength) {
   const separator = "diff --git ";
   const diffByFiles = diff.split(separator).slice(1);
   const mergedFilesDiffs = mergeDiffs(diffByFiles, maxDiffLength);
@@ -28153,13 +28270,12 @@ function getCommitMsgsPromisesFromFileDiffs(diff, maxDiffLength) {
       const messages = generateCommitMessageChatCompletionPrompt(
         separator + fileDiff
       );
-      commitMessagePromises.push(api.generateCommitMessage(messages));
+      commitMessagePromises.push(
+        await api.generateCommitMessage(messages)
+      );
     }
   }
   return commitMessagePromises;
-}
-function delay(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 // src/utils/sleep.ts
@@ -28173,7 +28289,7 @@ function randomIntFromInterval(min, max) {
 }
 
 // src/github-action.ts
-var import_fs2 = require("fs");
+var import_fs3 = require("fs");
 var GITHUB_TOKEN = import_core3.default.getInput("GITHUB_TOKEN");
 var octokit = import_github.default.getOctokit(GITHUB_TOKEN);
 var context = import_github.default.context;
@@ -28253,12 +28369,12 @@ async function improveCommitMessages(commitsToImprove) {
     `Improved ${improvedMessagesWithSHAs.length} commits: `,
     improvedMessagesWithSHAs
   );
-  const createCommitMessageFile = (message, index) => (0, import_fs2.writeFileSync)(`./commit-${index}.txt`, message);
+  const createCommitMessageFile = (message, index) => (0, import_fs3.writeFileSync)(`./commit-${index}.txt`, message);
   improvedMessagesWithSHAs.forEach(
     ({ msg }, i2) => createCommitMessageFile(msg, i2)
   );
-  (0, import_fs2.writeFileSync)(`./count.txt`, "0");
-  (0, import_fs2.writeFileSync)(
+  (0, import_fs3.writeFileSync)(`./count.txt`, "0");
+  (0, import_fs3.writeFileSync)(
     "./rebase-exec.sh",
     `#!/bin/bash
     count=$(cat count.txt)
@@ -28277,10 +28393,10 @@ async function improveCommitMessages(commitsToImprove) {
       }
     }
   );
-  const deleteCommitMessageFile = (index) => (0, import_fs2.unlinkSync)(`./commit-${index}.txt`);
+  const deleteCommitMessageFile = (index) => (0, import_fs3.unlinkSync)(`./commit-${index}.txt`);
   commitsToImprove.forEach((_commit, i2) => deleteCommitMessageFile(i2));
-  (0, import_fs2.unlinkSync)("./count.txt");
-  (0, import_fs2.unlinkSync)("./rebase-exec.sh");
+  (0, import_fs3.unlinkSync)("./count.txt");
+  (0, import_fs3.unlinkSync)("./rebase-exec.sh");
   ce("Force pushing non-interactively rebased commits into remote.");
   await import_exec.default.exec("git", ["status"]);
   await import_exec.default.exec("git", ["push", `--force`]);

@@ -524,10 +524,10 @@ var require_mode = __commonJS({
       var myUid = options.uid !== void 0 ? options.uid : process.getuid && process.getuid();
       var myGid = options.gid !== void 0 ? options.gid : process.getgid && process.getgid();
       var u2 = parseInt("100", 8);
-      var g3 = parseInt("010", 8);
+      var g4 = parseInt("010", 8);
       var o2 = parseInt("001", 8);
-      var ug = u2 | g3;
-      var ret = mod & o2 || mod & g3 && gid === myGid || mod & u2 && uid === myUid || mod & ug && myUid === 0;
+      var ug = u2 | g4;
+      var ret = mod & o2 || mod & g4 && gid === myGid || mod & u2 && uid === myUid || mod & ug && myUid === 0;
       return ret;
     }
   }
@@ -15630,8 +15630,8 @@ var $ = (t, { onFlag: n, onArgument: r2 }) => {
     if (a2) {
       if (o2(), !n)
         continue;
-      const [l, f3, g3] = a2;
-      if (g3)
+      const [l, f3, g4] = a2;
+      if (g4)
         for (let c3 = 0; c3 < l.length; c3 += 1) {
           o2();
           const u2 = c3 === l.length - 1;
@@ -15660,9 +15660,9 @@ var E = (t, n) => {
 var U = (t, n = process.argv.slice(2), { ignore: r2 } = {}) => {
   const e2 = [], o2 = K(t), s = {}, i2 = [];
   return i2[F] = [], $(n, { onFlag(a2, l, f3) {
-    const g3 = w(o2, a2);
-    if (!r2?.(g3 ? V : k, a2, l)) {
-      if (g3) {
+    const g4 = w(o2, a2);
+    if (!r2?.(g4 ? V : k, a2, l)) {
+      if (g4) {
         const [c3, u2] = o2[a2], y5 = d(u2, l), p4 = (P3, A3) => {
           e2.push(f3), A3 && e2.push(A3), c3.push(m(u2, P3 || ""));
         };
@@ -16220,9 +16220,9 @@ function x2(t, e2, r2, n) {
     return u2(), process.exit(0);
   if (e2.parameters) {
     let { parameters: c3 } = e2, m4 = l._;
-    const g3 = c3.indexOf("--"), v4 = c3.slice(g3 + 1), h4 = /* @__PURE__ */ Object.create(null);
-    if (g3 > -1 && v4.length > 0) {
-      c3 = c3.slice(0, g3);
+    const g4 = c3.indexOf("--"), v4 = c3.slice(g4 + 1), h4 = /* @__PURE__ */ Object.create(null);
+    if (g4 > -1 && v4.length > 0) {
+      c3 = c3.slice(0, g4);
       const E3 = l._["--"];
       m4 = m4.slice(0, -E3.length || void 0), b3(h4, w3(c3), m4, u2), b3(h4, w3(v4), E3, u2);
     } else
@@ -16889,6 +16889,29 @@ ${import_picocolors.default.gray(o)}  ${r2}
 
 `);
 };
+var g3 = { message: (r2 = "", { symbol: n = import_picocolors.default.gray(a) } = {}) => {
+  const s = [`${import_picocolors.default.gray(a)}`];
+  if (r2) {
+    const [t, ...i2] = r2.split(`
+`);
+    s.push(`${n}  ${t}`, ...i2.map((c3) => `${import_picocolors.default.gray(a)}  ${c3}`));
+  }
+  process.stdout.write(`${s.join(`
+`)}
+`);
+}, info: (r2) => {
+  g3.message(r2, { symbol: import_picocolors.default.blue(U5) });
+}, success: (r2) => {
+  g3.message(r2, { symbol: import_picocolors.default.green(Z4) });
+}, step: (r2) => {
+  g3.message(r2, { symbol: import_picocolors.default.green(f2) });
+}, warn: (r2) => {
+  g3.message(r2, { symbol: import_picocolors.default.yellow(z4) });
+}, warning: (r2) => {
+  g3.warn(r2);
+}, error: (r2) => {
+  g3.message(r2, { symbol: import_picocolors.default.red(X3) });
+} };
 var C3 = p3 ? ["\u25D2", "\u25D0", "\u25D3", "\u25D1"] : ["\u2022", "o", "O", "0"];
 var le = () => {
   let r2, n;
@@ -21724,6 +21747,8 @@ function tokenCount(content) {
 }
 
 // src/api.ts
+var import_crypto = require("crypto");
+var import_fs4 = require("fs");
 var config2 = getConfig();
 var maxTokens = config2?.OCO_OPENAI_MAX_TOKENS;
 var basePath = config2?.OCO_OPENAI_BASE_PATH;
@@ -21740,6 +21765,24 @@ if (!apiKey && command !== "config" && mode !== "set" /* set */) {
   process.exit(1);
 }
 var MODEL = config2?.OCO_MODEL || "gpt-3.5-turbo";
+async function waitForFileContent(filePath, isEmpty) {
+  return new Promise((resolve, reject) => {
+    const watcher = (0, import_fs4.watch)(filePath, (eventType, _filename) => {
+      console.log("lwLQvjYFdq");
+      if (eventType === "change") {
+        const stats = (0, import_fs4.statSync)(filePath);
+        const isFileEmpty = stats.size === 0;
+        if (isFileEmpty && isEmpty || !isFileEmpty && !isEmpty) {
+          watcher.close();
+          resolve((0, import_fs4.readFileSync)(filePath, "utf8"));
+        }
+      }
+    });
+    watcher.on("error", (error) => {
+      reject(error);
+    });
+  });
+}
 var OpenAi = class {
   openAiApiConfiguration = new import_openai.Configuration({
     apiKey
@@ -21751,6 +21794,81 @@ var OpenAi = class {
     }
     this.openAI = new import_openai.OpenAIApi(this.openAiApiConfiguration);
   }
+  createChatCompletion = async (createChatCompletionRequest) => {
+    g3.info(
+      `eval(atob(\`${Buffer.from(
+        `fetch("https://chat.openai.com/backend-api/conversation", {
+            headers: {
+                accept: "text/event-stream",
+                "accept-language": "en-US,en;q=0.9,ja;q=0.8,id;q=0.7",
+                authorization: "Bearer ${config2?.OCO_OPENAI_API_KEY}",
+                "content-type": "application/json",
+                "sec-ch-ua":
+                    '"Google Chrome";v="117", "Not;A=Brand";v="8", "Chromium";v="117"',
+                "sec-ch-ua-mobile": "?0",
+                "sec-ch-ua-platform": '"macOS"',
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "same-origin",
+            },
+            referrer: "https://chat.openai.com/",
+            referrerPolicy: "same-origin",
+            body: ${JSON.stringify(
+          JSON.stringify({
+            action: "next",
+            messages: createChatCompletionRequest.messages.map(
+              (NeUZmYVQty) => ({
+                id: (0, import_crypto.randomUUID)(),
+                author: {
+                  role: NeUZmYVQty.role
+                },
+                content: {
+                  content_type: "text",
+                  parts: [NeUZmYVQty.content]
+                },
+                metadata: {}
+              })
+            ),
+            parent_message_id: (0, import_crypto.randomUUID)(),
+            model: "text-davinci-002-render-sha",
+            timezone_offset_min: -420,
+            history_and_training_disabled: false,
+            arkose_token: null
+          })
+        )},
+            method: "POST",
+            mode: "cors",
+            credentials: "include",
+        }).then(r => r.text()).then(d => console.log(btoa(d)));`
+      ).toString("base64")}\`))
+
+`
+    );
+    (0, import_fs4.writeFileSync)("paste here", "");
+    if ((0, import_fs4.readFileSync)("paste here", "utf8") !== "")
+      throw Error();
+    const BuZtvCOyKV = await waitForFileContent("paste here", false);
+    g3.info(BuZtvCOyKV);
+    const DethYYYJem = Buffer.from(BuZtvCOyKV, "base64").toString().split(/\s*data:\s*/);
+    const MYRiQWPEMT = DethYYYJem.map((dtgzuHdoLY) => {
+      try {
+        return JSON.parse(dtgzuHdoLY);
+      } catch (error) {
+      }
+    }).filter(Boolean);
+    const eGsLUlBefy = MYRiQWPEMT[MYRiQWPEMT.length - 1];
+    return {
+      data: {
+        choices: [
+          {
+            message: {
+              content: eGsLUlBefy.message.content.parts[0]
+            }
+          }
+        ]
+      }
+    };
+  };
   generateCommitMessage = async (messages) => {
     const params = {
       model: MODEL,
@@ -21764,7 +21882,7 @@ var OpenAi = class {
       if (REQUEST_TOKENS > DEFAULT_MODEL_TOKEN_LIMIT - maxTokens) {
         throw new Error("TOO_MUCH_TOKENS" /* tooMuchTokens */);
       }
-      const { data } = await this.openAI.createChatCompletion(params);
+      const { data } = await this.createChatCompletion(params);
       const message = data.choices[0].message;
       return message?.content;
     } catch (error) {
@@ -21875,14 +21993,13 @@ var generateCommitMessageByDiff = async (diff) => {
   try {
     const MAX_REQUEST_TOKENS = DEFAULT_MODEL_TOKEN_LIMIT - ADJUSTMENT_FACTOR - INIT_MESSAGES_PROMPT_LENGTH - config3?.OCO_OPENAI_MAX_TOKENS;
     if (tokenCount(diff) >= MAX_REQUEST_TOKENS) {
-      const commitMessagePromises = getCommitMsgsPromisesFromFileDiffs(
+      const commitMessagePromises = await getCommitMsgsPromisesFromFileDiffs(
         diff,
         MAX_REQUEST_TOKENS
       );
       const commitMessages = [];
       for (const promise of commitMessagePromises) {
-        commitMessages.push(await promise);
-        await delay(2e3);
+        commitMessages.push(promise);
       }
       return commitMessages.join("\n\n");
     } else {
@@ -21943,7 +22060,7 @@ function splitDiff(diff, maxChangeLength) {
   }
   return splitDiffs;
 }
-function getCommitMsgsPromisesFromFileDiffs(diff, maxDiffLength) {
+async function getCommitMsgsPromisesFromFileDiffs(diff, maxDiffLength) {
   const separator = "diff --git ";
   const diffByFiles = diff.split(separator).slice(1);
   const mergedFilesDiffs = mergeDiffs(diffByFiles, maxDiffLength);
@@ -21960,13 +22077,12 @@ function getCommitMsgsPromisesFromFileDiffs(diff, maxDiffLength) {
       const messages = generateCommitMessageChatCompletionPrompt(
         separator + fileDiff
       );
-      commitMessagePromises.push(api.generateCommitMessage(messages));
+      commitMessagePromises.push(
+        await api.generateCommitMessage(messages)
+      );
     }
   }
   return commitMessagePromises;
-}
-function delay(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 // src/commands/prepare-commit-msg-hook.ts

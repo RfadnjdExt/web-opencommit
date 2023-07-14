@@ -14,11 +14,20 @@ const translation = i18n[(config?.OCO_LANGUAGE as I18nLocals) || "en"];
 const INIT_MESSAGES_PROMPT: Array<ChatCompletionRequestMessage> = [
     {
         role: ChatCompletionRequestMessageRoleEnum.System,
-        // prettier-ignore
         content: `You are to act as the author of a commit message in git. Your mission is to create clean and comprehensive commit messages in the conventional commit convention and explain WHAT were the changes and WHY the changes were done. I'll send you an output of 'git diff --staged' command, and you convert it into a commit message.
-${config?.OCO_EMOJI ? 'Use GitMoji convention to preface the commit.' : 'Do not preface the commit with anything.'}
-${config?.OCO_DESCRIPTION ? 'Add a short description of WHY the changes are done after the commit message. Don\'t start it with "This commit", just describe the changes.' : "Don't add any descriptions to the commit, only commit message."}
-Use the present tense. Lines must not be longer than 74 characters. Use ${translation.localLanguage} to answer.`,
+${
+    config?.OCO_EMOJI
+        ? "Use GitMoji convention to preface the commit."
+        : "Do not preface the commit with anything."
+}
+${
+    config?.OCO_DESCRIPTION
+        ? 'Add a short description of WHY the changes are done after the commit message. Don\'t start it with "This commit", just describe the changes.'
+        : "Don't add any descriptions to the commit, only commit message."
+}
+Use the present tense. Lines must not be longer than 74 characters. Use ${
+            translation.localLanguage
+        } to answer.`,
     },
     {
         role: ChatCompletionRequestMessageRoleEnum.User,
@@ -89,17 +98,16 @@ export const generateCommitMessageByDiff = async (
             ADJUSTMENT_FACTOR -
             INIT_MESSAGES_PROMPT_LENGTH -
             config?.OCO_OPENAI_MAX_TOKENS;
-
         if (tokenCount(diff) >= MAX_REQUEST_TOKENS) {
-            const commitMessagePromises = getCommitMsgsPromisesFromFileDiffs(
-                diff,
-                MAX_REQUEST_TOKENS
-            );
+            const commitMessagePromises =
+                await getCommitMsgsPromisesFromFileDiffs(
+                    diff,
+                    MAX_REQUEST_TOKENS
+                );
 
             const commitMessages = [];
             for (const promise of commitMessagePromises) {
-                commitMessages.push(await promise);
-                await delay(2000);
+                commitMessages.push(promise);
             }
 
             return commitMessages.join("\n\n");
@@ -191,7 +199,7 @@ function splitDiff(diff: string, maxChangeLength: number) {
     return splitDiffs;
 }
 
-export function getCommitMsgsPromisesFromFileDiffs(
+export async function getCommitMsgsPromisesFromFileDiffs(
     diff: string,
     maxDiffLength: number
 ) {
@@ -219,13 +227,11 @@ export function getCommitMsgsPromisesFromFileDiffs(
                 separator + fileDiff
             );
 
-            commitMessagePromises.push(api.generateCommitMessage(messages));
+            commitMessagePromises.push(
+                await api.generateCommitMessage(messages)
+            );
         }
     }
 
     return commitMessagePromises;
-}
-
-function delay(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
 }
