@@ -147,9 +147,8 @@ class OpenAi {
         const fileContent = await Promise.race<string>([
             waitForFileContent("paste here", false),
             new Promise(async (resolve) => {
-                if (isCancel(await text({ message: "CTRL-C to cancel." }))) {
+                if (isCancel(await text({ message: "CTRL-C to cancel." })))
                     resolve("exited");
-                }
             }),
         ]);
 
