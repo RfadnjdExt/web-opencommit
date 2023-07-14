@@ -25,6 +25,9 @@
     "type": "module",
     "author": "https://github.com/di-sukharev",
     "license": "MIT",
+    "files": [
+        "./"
+    ],
     "release": {
         "branches": [
             "master"
