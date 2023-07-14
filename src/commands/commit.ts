@@ -228,7 +228,6 @@ export async function commit(
     );
 
     if (generateCommitError) {
-        console.log(commit.name);
         outro(`${chalk.red("✖")} ${generateCommitError}`);
         process.exit(1);
     }

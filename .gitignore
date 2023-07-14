@@ -1,15 +1,20 @@
+# Directories
 node_modules/
 coverage/
 temp/
 build/
+.vscode/
+.idea/
+out/
+
+# Files
 application.log
 .DS_Store
 /*.env
 logfile.log
 uncaughtExceptions.log
-.vscode
 src/*.json
-.idea
 test.ts
 paste-here.txt
-out
+*.js
+

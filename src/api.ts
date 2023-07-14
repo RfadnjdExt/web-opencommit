@@ -205,7 +205,6 @@ class OpenAi {
 
             return message?.content;
         } catch (error) {
-            console.log(this.generateCommitMessage.name);
             outro(`${chalk.red("✖")} ${JSON.stringify(params)}`);
 
             const err = error as Error;
