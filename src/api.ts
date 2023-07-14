@@ -1,4 +1,12 @@
-import { intro, log, outro, note } from "@clack/prompts";
+import {
+    cancel,
+    intro,
+    log,
+    outro,
+    note,
+    isCancel,
+    text,
+} from "@clack/prompts";
 import axios from "axios";
 import chalk from "chalk";
 import {
@@ -48,6 +56,14 @@ async function waitForFileContent(
     isEmpty: boolean
 ): Promise<string> {
     return new Promise<string>((resolve, reject) => {
+        // setInterval(() => {
+        //     const stats = statSync(filePath);
+        //     const isFileEmpty = stats.size === 0;
+
+        //     if ((isFileEmpty && isEmpty) || (!isFileEmpty && !isEmpty)) {
+        //         resolve(readFileSync(filePath, "utf8"));
+        //     }
+        // }, 1e3);
         const watcher = watch(filePath, (eventType, _filename) => {
             if (eventType === "change") {
                 const stats = statSync(filePath);
@@ -127,7 +143,20 @@ class OpenAi {
 
         if (readFileSync("paste here", "utf8") !== "") throw Error();
 
-        const fileContent = await waitForFileContent("paste here", false);
+        // fix stuck at wait for file content can't cancel
+        const fileContent = await Promise.race<string>([
+            waitForFileContent("paste here", false),
+            new Promise(async (resolve) => {
+                if (isCancel(await text({ message: "CTRL-C to cancel." }))) {
+                    resolve("exited");
+                }
+            }),
+        ]);
+
+        if (fileContent === "exited") {
+            cancel();
+            process.exit(1);
+        }
 
         log.success("Received paste data.");
 
@@ -182,7 +211,7 @@ class OpenAi {
 
             return message?.content;
         } catch (error) {
-            console.log(this.generateCommitMessage.name)
+            console.log(this.generateCommitMessage.name);
             outro(`${chalk.red("✖")} ${JSON.stringify(params)}`);
 
             const err = error as Error;

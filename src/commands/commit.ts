@@ -140,7 +140,7 @@ ${chalk.grey("——————————————————")}`
             }
         }
     } catch (error) {
-        console.log(error)
+        console.log(error);
         const err = error as Error;
         outro(`${chalk.red("✖")} ${err?.message || err}`);
         process.exit(1);
@@ -228,7 +228,7 @@ export async function commit(
     );
 
     if (generateCommitError) {
-        console.log(commit.name)
+        console.log(commit.name);
         outro(`${chalk.red("✖")} ${generateCommitError}`);
         process.exit(1);
     }

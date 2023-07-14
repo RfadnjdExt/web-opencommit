@@ -98,7 +98,6 @@ export const generateCommitMessageByDiff = async (
             ADJUSTMENT_FACTOR -
             INIT_MESSAGES_PROMPT_LENGTH -
             config?.OCO_OPENAI_MAX_TOKENS;
-            console.log(diff)
         if (tokenCount(diff) >= MAX_REQUEST_TOKENS) {
             const commitMessagePromises =
                 await getCommitMsgsPromisesFromFileDiffs(
