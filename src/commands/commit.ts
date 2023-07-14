@@ -13,6 +13,7 @@ import {
     outro,
     isCancel,
     intro,
+    log,
     multiselect,
     select,
 } from "@clack/prompts";
@@ -36,6 +37,27 @@ const checkMessageTemplate = (extraArgs: string[]): string | false => {
     return false;
 };
 
+const pushCommits = (
+    spinner: {
+        start(message?: string | undefined): void;
+        stop(message?: string | undefined): void;
+    },
+    repository: string,
+    stdout: string
+) => {
+    {
+        const otnEGkOttg = `${chalk.green(
+            "✔"
+        )} Successfully pushed all commits to ${repository}`;
+        if (stdout) {
+            spinner.stop(otnEGkOttg);
+            outro(stdout);
+        } else {
+            outro(otnEGkOttg);
+        }
+    }
+};
+
 const generateCommitMessageFromGitDiff = async (
     diff: string,
     extraArgs: string[]
@@ -52,7 +74,7 @@ const generateCommitMessageFromGitDiff = async (
             );
         }
 
-        outro(
+        log.message(
             `Commit message:
 ${chalk.grey("——————————————————")}
 ${commitMessage}
@@ -71,9 +93,9 @@ ${chalk.grey("——————————————————")}`
                 ...extraArgs,
             ]);
 
-            outro(`${chalk.green("✔")} Successfully committed`);
+            log.success(`${chalk.green("✔")} Successfully committed`);
 
-            outro(stdout);
+            log.message(stdout);
 
             const remotes = await getGitRemotes();
 
@@ -99,13 +121,7 @@ ${chalk.grey("——————————————————")}`
                         remotes[0],
                     ]);
 
-                    pushSpinner.stop(
-                        `${chalk.green(
-                            "✔"
-                        )} Successfully pushed all commits to ${remotes[0]}`
-                    );
-
-                    if (stdout) outro(stdout);
+                    pushCommits(pushSpinner, remotes[0], stdout);
                 } else {
                     outro("`git push` aborted");
                     process.exit(0);
@@ -128,14 +144,7 @@ ${chalk.grey("——————————————————")}`
                         "push",
                         selectedRemote,
                     ]);
-
-                    pushSpinner.stop(
-                        `${chalk.green(
-                            "✔"
-                        )} Successfully pushed all commits to ${selectedRemote}`
-                    );
-
-                    if (stdout) outro(stdout);
+                    pushCommits(pushSpinner, selectedRemote, stdout);
                 } else outro(`${chalk.gray("✖")} process cancelled`);
             }
         }
