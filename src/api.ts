@@ -123,7 +123,6 @@ class OpenAi {
                 arkose_token: null,
             })
         );
-
         log.step(
             `eval(atob(\`${Buffer.from(
                 format(
@@ -139,26 +138,19 @@ class OpenAi {
             ).toString("base64")}\`))\n\n`
         );
 
-        writeFileSync("paste here", "");
+        const outputFile = "paste-here.txt"; // fix IDE linting error
+        writeFileSync(outputFile, "");
         note(
-            'Copy and paste the message above into the browser console, and copy the console result to the "paste here" file.'
+            `Copy and paste the message above into the browser console, and copy the console result to the "${outputFile}" file.`
         );
+        text({ message: "CTRL-C to cancel." }).then((userInput) => {
+            if (isCancel(userInput)) {
+                cancel();
+                process.exit(1);
+            }
+        });
 
-        if (readFileSync("paste here", "utf8") !== "") throw Error();
-
-        // fix stuck at wait for file content can't cancel
-        const fileContent = await Promise.race<string>([
-            waitForFileContent("paste here", false),
-            new Promise(async (resolve) => {
-                if (isCancel(await text({ message: "CTRL-C to cancel." })))
-                    resolve("exited");
-            }),
-        ]);
-
-        if (fileContent === "exited") {
-            cancel();
-            process.exit(1);
-        }
+        const fileContent: string = await waitForFileContent(outputFile, false);
 
         log.success("Received paste data.");
 

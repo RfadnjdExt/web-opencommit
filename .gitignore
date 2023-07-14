@@ -11,5 +11,5 @@ uncaughtExceptions.log
 src/*.json
 .idea
 test.ts
-paste here
+paste-here.txt
 out
