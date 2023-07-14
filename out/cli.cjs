@@ -16272,7 +16272,7 @@ function G3(t, e2) {
 // package.json
 var package_default = {
   name: "opencommit",
-  version: "2.4.1",
+  version: "2.4.2",
   description: "Auto-generate impressive commits in 1 second. Killing lame commits with AI \u{1F92F}\u{1F52B}",
   keywords: [
     "git",
@@ -16347,6 +16347,9 @@ var package_default = {
     ini: "^3.0.1",
     inquirer: "^9.1.4",
     openai: "^3.2.1"
+  },
+  prettier: {
+    tabWidth: 4
   }
 };
 
@@ -17605,14 +17608,20 @@ var DEFAULT_MODEL_TOKEN_LIMIT = 4096;
 var validateConfig = (key, condition, validationMessage) => {
   if (!condition) {
     ce(
-      `${source_default.red("\u2716")} Unsupported config key ${key}: ${validationMessage}`
+      `${source_default.red(
+        "\u2716"
+      )} Unsupported config key ${key}: ${validationMessage}`
     );
     process.exit(1);
   }
 };
 var configValidators = {
   ["OCO_OPENAI_API_KEY" /* OCO_OPENAI_API_KEY */](value) {
-    validateConfig("OCO_OPENAI_API_KEY" /* OCO_OPENAI_API_KEY */, value, "Cannot be empty");
+    validateConfig(
+      "OCO_OPENAI_API_KEY" /* OCO_OPENAI_API_KEY */,
+      value,
+      "Cannot be empty"
+    );
     validateConfig(
       "OCO_OPENAI_API_KEY" /* OCO_OPENAI_API_KEY */,
       value.startsWith("sk-"),
@@ -17769,7 +17778,9 @@ var configCommand = G3(
         }
       } else if (mode2 === "set" /* set */) {
         await setConfig(
-          keyValues.map((keyValue) => keyValue.split("="))
+          keyValues.map(
+            (keyValue) => keyValue.split("=")
+          )
         );
       } else {
         throw new Error(
@@ -18815,7 +18826,9 @@ var hookCommand = G3(
       await assertGitRepo();
       const { setUnset: mode2 } = argv._;
       if (mode2 === "set") {
-        ae(`setting opencommit as '${HOOK_NAME}' hook at ${SYMLINK_URL}`);
+        ae(
+          `setting opencommit as '${HOOK_NAME}' hook at ${SYMLINK_URL}`
+        );
         if (await isHookExists()) {
           let realPath;
           try {
@@ -18825,7 +18838,9 @@ var hookCommand = G3(
             realPath = null;
           }
           if (realPath === HOOK_URL)
-            return ce(`OpenCommit is already set as '${HOOK_NAME}'`);
+            return ce(
+              `OpenCommit is already set as '${HOOK_NAME}'`
+            );
           throw new Error(
             `Different ${HOOK_NAME} is already set. Remove it before setting opencommit as '${HOOK_NAME}' hook.`
           );
@@ -21770,7 +21785,11 @@ var OpenAi = class {
 };
 var getOpenCommitLatestVersion = async () => {
   try {
-    const { stdout } = await execa("npm", ["view", "opencommit", "version"]);
+    const { stdout } = await execa("npm", [
+      "view",
+      "opencommit",
+      "version"
+    ]);
     return stdout;
   } catch (_6) {
     ce("Error while getting the latest version of opencommit");
@@ -21966,7 +21985,9 @@ var prepareCommitMessageHook = async (isStageAllFlag = false) => {
       if (changedFiles)
         await gitAdd({ files: changedFiles });
       else {
-        ce("No changes detected, write some code and run `oco` again");
+        ce(
+          "No changes detected, write some code and run `oco` again"
+        );
         process.exit(1);
       }
     }
@@ -22074,7 +22095,9 @@ ${source_default.grey("\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2
             remotes[0]
           ]);
           pushSpinner.stop(
-            `${source_default.green("\u2714")} Successfully pushed all commits to ${remotes[0]}`
+            `${source_default.green(
+              "\u2714"
+            )} Successfully pushed all commits to ${remotes[0]}`
           );
           if (stdout2)
             ce(stdout2);
@@ -22085,12 +22108,18 @@ ${source_default.grey("\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2014\u2
       } else {
         const selectedRemote = await ee({
           message: "Choose a remote to push to",
-          options: remotes.map((remote) => ({ value: remote, label: remote }))
+          options: remotes.map((remote) => ({
+            value: remote,
+            label: remote
+          }))
         });
         if (!eD2(selectedRemote)) {
           const pushSpinner = le();
           pushSpinner.start(`Running \`git push ${selectedRemote}\``);
-          const { stdout: stdout2 } = await execa("git", ["push", selectedRemote]);
+          const { stdout: stdout2 } = await execa("git", [
+            "push",
+            selectedRemote
+          ]);
           pushSpinner.stop(
             `${source_default.green(
               "\u2714"
@@ -22143,7 +22172,9 @@ async function commit(extraArgs2 = [], isStageAllFlag = false) {
     }
     if (stagedFiles.length === 0 && changedFiles.length > 0) {
       const files = await re({
-        message: source_default.cyan("Select the files you want to add to the commit:"),
+        message: source_default.cyan(
+          "Select the files you want to add to the commit:"
+        ),
         options: changedFiles.map((file) => ({
           value: file,
           label: file

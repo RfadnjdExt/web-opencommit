@@ -1,29 +1,29 @@
 {
-  "compilerOptions": {
-    "target": "ESNext",
-    "lib": ["ES5", "ES6"],
+    "compilerOptions": {
+        "target": "ESNext",
+        "lib": ["ES5", "ES6"],
 
-    "module": "ESNext",
-    // "rootDir": "./src",
-    "resolveJsonModule": true,
-    "moduleResolution": "node",
+        "module": "ESNext",
+        // "rootDir": "./src",
+        "resolveJsonModule": true,
+        "moduleResolution": "node",
 
-    "allowJs": true,
+        "allowJs": true,
 
-    "outDir": "./out",
+        "outDir": "./out",
 
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
 
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+        "strict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
 
-    "skipLibCheck": true
-  },
-  "exclude": ["node_modules"],
-  "ts-node": {
-    "esm": true,
-    "experimentalSpecifierResolution": "node"
-  }
+        "skipLibCheck": true
+    },
+    "exclude": ["node_modules"],
+    "ts-node": {
+        "esm": true,
+        "experimentalSpecifierResolution": "node"
+    }
 }

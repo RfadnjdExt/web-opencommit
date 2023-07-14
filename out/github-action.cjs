@@ -27628,14 +27628,20 @@ var DEFAULT_MODEL_TOKEN_LIMIT = 4096;
 var validateConfig = (key, condition, validationMessage) => {
   if (!condition) {
     ce(
-      `${source_default.red("\u2716")} Unsupported config key ${key}: ${validationMessage}`
+      `${source_default.red(
+        "\u2716"
+      )} Unsupported config key ${key}: ${validationMessage}`
     );
     process.exit(1);
   }
 };
 var configValidators = {
   ["OCO_OPENAI_API_KEY" /* OCO_OPENAI_API_KEY */](value) {
-    validateConfig("OCO_OPENAI_API_KEY" /* OCO_OPENAI_API_KEY */, value, "Cannot be empty");
+    validateConfig(
+      "OCO_OPENAI_API_KEY" /* OCO_OPENAI_API_KEY */,
+      value,
+      "Cannot be empty"
+    );
     validateConfig(
       "OCO_OPENAI_API_KEY" /* OCO_OPENAI_API_KEY */,
       value.startsWith("sk-"),
@@ -27792,7 +27798,9 @@ var configCommand = G3(
         }
       } else if (mode2 === "set" /* set */) {
         await setConfig(
-          keyValues.map((keyValue) => keyValue.split("="))
+          keyValues.map(
+            (keyValue) => keyValue.split("=")
+          )
         );
       } else {
         throw new Error(
@@ -28238,7 +28246,9 @@ async function improveCommitMessages(commitsToImprove) {
   const commitSHAsToImprove = commitsToImprove.map((commit) => commit.id);
   const diffsWithSHAs = await getDiffsBySHAs(commitSHAsToImprove);
   ce("Done.");
-  const improvedMessagesWithSHAs = await improveMessagesInChunks(diffsWithSHAs);
+  const improvedMessagesWithSHAs = await improveMessagesInChunks(
+    diffsWithSHAs
+  );
   console.log(
     `Improved ${improvedMessagesWithSHAs.length} commits: `,
     improvedMessagesWithSHAs
@@ -28284,8 +28294,16 @@ async function run() {
       const payload = import_github.default.context.payload;
       const commits = payload.commits;
       if (payload.pusher.email)
-        await import_exec.default.exec("git", ["config", "user.email", payload.pusher.email]);
-      await import_exec.default.exec("git", ["config", "user.name", payload.pusher.name]);
+        await import_exec.default.exec("git", [
+          "config",
+          "user.email",
+          payload.pusher.email
+        ]);
+      await import_exec.default.exec("git", [
+        "config",
+        "user.name",
+        payload.pusher.name
+      ]);
       await import_exec.default.exec("git", ["status"]);
       await import_exec.default.exec("git", ["log", "--oneline"]);
       await improveCommitMessages(commits);

@@ -25,19 +25,19 @@ You can use OpenCommit by simply running it via the CLI like this `oco`. 2 secon
 
 1. Install OpenCommit globally to use in any repository:
 
-   ```sh
-   npm install -g opencommit
-   ```
+    ```sh
+    npm install -g opencommit
+    ```
 
 2. Get your API key from [OpenAI](https://platform.openai.com/account/api-keys). Make sure that you add your payment details, so the API works.
 
 3. Set the key to OpenCommit config:
 
-   ```sh
-   opencommit config set OCO_OPENAI_API_KEY=<your_api_key>
-   ```
+    ```sh
+    opencommit config set OCO_OPENAI_API_KEY=<your_api_key>
+    ```
 
-   Your API key is stored locally in the `~/.opencommit` config file.
+    Your API key is stored locally in the `~/.opencommit` config file.
 
 ## Setup OpenCommit as a GitHub Action 🔥
 
@@ -48,45 +48,45 @@ This is great if you want to make sure all of the commits in all of your reposit
 Create a file `.github/workflows/opencommit.yml` with the contents below:
 
 ```yml
-name: 'OpenCommit Action'
+name: "OpenCommit Action"
 
 on:
-  push:
-    # this list of branches is often enough,
-    # but you may still ignore other public branches
-    branches-ignore: [main master dev development release]
+    push:
+        # this list of branches is often enough,
+        # but you may still ignore other public branches
+        branches-ignore: [main master dev development release]
 
 jobs:
-  opencommit:
-    timeout-minutes: 10
-    name: OpenCommit
-    runs-on: ubuntu-latest
-    permissions: write-all
-    steps:
-      - name: Setup Node.js Environment
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16'
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - uses: di-sukharev/opencommit@github-action-v1.0.4
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    opencommit:
+        timeout-minutes: 10
+        name: OpenCommit
+        runs-on: ubuntu-latest
+        permissions: write-all
+        steps:
+            - name: Setup Node.js Environment
+              uses: actions/setup-node@v2
+              with:
+                  node-version: "16"
+            - uses: actions/checkout@v3
+              with:
+                  fetch-depth: 0
+            - uses: di-sukharev/opencommit@github-action-v1.0.4
+              with:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-        env:
-          # set openAI api key in repo actions secrets,
-          # for openAI keys go to: https://platform.openai.com/account/api-keys
-          # for repo secret go to: <your_repo_url>/settings/secrets/actions
-          OCO_OPENAI_API_KEY: ${{ secrets.OCO_OPENAI_API_KEY }}
+              env:
+                  # set openAI api key in repo actions secrets,
+                  # for openAI keys go to: https://platform.openai.com/account/api-keys
+                  # for repo secret go to: <your_repo_url>/settings/secrets/actions
+                  OCO_OPENAI_API_KEY: ${{ secrets.OCO_OPENAI_API_KEY }}
 
-          # customization
-          OCO_OPENAI_MAX_TOKENS: 500
-          OCO_OPENAI_BASE_PATH: ''
-          OCO_DESCRIPTION: false
-          OCO_EMOJI: false
-          OCO_MODEL: gpt-3.5-turbo
-          OCO_LANGUAGE: en
+                  # customization
+                  OCO_OPENAI_MAX_TOKENS: 500
+                  OCO_OPENAI_BASE_PATH: ""
+                  OCO_DESCRIPTION: false
+                  OCO_EMOJI: false
+                  OCO_MODEL: gpt-3.5-turbo
+                  OCO_LANGUAGE: en
 ```
 
 That is it. Now when you push to any branch in your repo — all NEW commits are being improved by your never-tired AI.
