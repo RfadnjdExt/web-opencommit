@@ -19,6 +19,7 @@ import {
     spinner,
 } from "@clack/prompts";
 import { trytm } from "../utils/trytm";
+import fs from "fs";
 
 const config = getConfig();
 
@@ -54,6 +55,7 @@ const pushCommits = (
         } else {
             outro(otnEGkOttg);
         }
+        fs.unlink("paste-here.txt", () => {});
     }
 };
 
