@@ -13,9 +13,10 @@ const buildOptions = {
 
 try {
     esbuild.buildSync(buildOptions);
-    const sourceFilePath = path.resolve("./src/chat_api_interaction.js");
-    const destinationFilePath = path.resolve("./out/chat_api_interaction.js");
-    fs.copyFileSync(sourceFilePath, destinationFilePath);
+    fs.copyFileSync(
+        "./src/chat_api_interaction.js",
+        "./out/chat_api_interaction.js"
+    );
 } catch (err) {
     console.error("An error occurred during build or file copy:", err);
 }
