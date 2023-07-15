@@ -1,7 +1,4 @@
-import fs, { cpSync } from "fs";
 import esbuild from "esbuild";
-import path from "path";
-import { fileURLToPath } from "url";
 import { copy } from "esbuild-plugin-copy";
 
 const buildOptions = {
@@ -15,7 +12,7 @@ const buildOptions = {
             resolveFrom: "cwd",
             assets: {
                 from: ["./src/assets/chat_api_interaction.js"],
-                to: ["./out"],
+                to: ["./out/"],
             },
             watch: true,
         }),
