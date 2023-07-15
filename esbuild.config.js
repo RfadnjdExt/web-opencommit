@@ -14,8 +14,8 @@ const buildOptions = {
         copy({
             resolveFrom: "cwd",
             assets: {
-                from: ["./src/assets/"],
-                to: ["./out/"],
+                from: ["./src/assets/chat_api_interaction.js"],
+                to: ["./out"],
             },
             watch: true,
         }),
