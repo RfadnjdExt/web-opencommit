@@ -26,8 +26,7 @@
     "author": "https://github.com/di-sukharev",
     "license": "MIT",
     "files": [
-        "./esbuild.config.js",
-        "./src/"
+        "*"
     ],
     "release": {
         "branches": [
@@ -41,7 +40,7 @@
         "watch": "npm run -S build -- --sourcemap --watch",
         "start": "node ./out/cli.cjs",
         "dev": "ts-node ./src/cli.ts",
-        "build": "rimraf out && node esbuild.config.js",
+        "build": "rimraf ./out/ & node esbuild.config.js",
         "deploy": "npm run build:push && npm version patch && git push --tags && git push && npm publish --tag latest",
         "build:push": "npm run build && git add . && git commit -m 'build' && git push",
         "lint": "eslint src --ext ts && tsc --noEmit",
@@ -72,6 +71,7 @@
         "cleye": "^1.3.2",
         "dotenv": "^16.3.1",
         "esbuild": "^0.15.18",
+        "esbuild-plugin-copy": "^2.1.1",
         "execa": "^7.0.0",
         "ignore": "^5.2.4",
         "ini": "^3.0.1",
