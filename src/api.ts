@@ -56,29 +56,29 @@ async function waitForFileContent(
     isEmpty: boolean
 ): Promise<string> {
     return new Promise<string>((resolve, reject) => {
-        // setInterval(() => {
-        //     const stats = statSync(filePath);
-        //     const isFileEmpty = stats.size === 0;
+        setInterval(() => {
+            const stats = statSync(filePath);
+            const isFileEmpty = stats.size === 0;
 
-        //     if ((isFileEmpty && isEmpty) || (!isFileEmpty && !isEmpty)) {
-        //         resolve(readFileSync(filePath, "utf8"));
-        //     }
-        // }, 1e3);
-        const watcher = watch(filePath, (eventType, _filename) => {
-            if (eventType === "change") {
-                const stats = statSync(filePath);
-                const isFileEmpty = stats.size === 0;
-
-                if ((isFileEmpty && isEmpty) || (!isFileEmpty && !isEmpty)) {
-                    watcher.close();
-                    resolve(readFileSync(filePath, "utf8"));
-                }
+            if ((isFileEmpty && isEmpty) || (!isFileEmpty && !isEmpty)) {
+                resolve(readFileSync(filePath, "utf8"));
             }
-        });
+        }, 1e3);
+        // const watcher = watch(filePath, (eventType, _filename) => {
+        //     if (eventType === "change") {
+        //         const stats = statSync(filePath);
+        //         const isFileEmpty = stats.size === 0;
 
-        watcher.on("error", (error) => {
-            reject(error);
-        });
+        //         if ((isFileEmpty && isEmpty) || (!isFileEmpty && !isEmpty)) {
+        //             watcher.close();
+        //             resolve(readFileSync(filePath, "utf8"));
+        //         }
+        //     }
+        // });
+
+        // watcher.on("error", (error) => {
+        //     reject(error);
+        // });
     });
 }
 class OpenAi {
