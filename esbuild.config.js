@@ -2,6 +2,7 @@ import fs, { cpSync } from "fs";
 import esbuild from "esbuild";
 import path from "path";
 import { fileURLToPath } from "url";
+import { copy } from "esbuild-plugin-copy";
 
 const buildOptions = {
     entryPoints: ["./src/cli.ts"],
@@ -9,11 +10,20 @@ const buildOptions = {
     platform: "node",
     format: "cjs",
     outfile: "./out/cli.cjs",
+    plugins: [
+        copy({
+            resolveFrom: "cwd",
+            assets: {
+                from: ["./assets/*"],
+                to: ["./out"],
+            },
+            watch: true,
+        }),
+    ],
 };
 
 try {
-    cpSync("./src/chat_api_interaction.js", "./out/chat_api_interaction.js");
-    esbuild.buildSync(buildOptions);
+    esbuild.build(buildOptions);
 } catch (err) {
     console.error("An error occurred during build or file copy:", err);
 }
