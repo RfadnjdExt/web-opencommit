@@ -14,7 +14,7 @@ const buildOptions = {
         copy({
             resolveFrom: "cwd",
             assets: {
-                from: ["./assets/*"],
+                from: ["./src/*"],
                 to: ["./out"],
             },
             watch: true,
