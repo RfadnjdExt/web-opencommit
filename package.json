@@ -46,7 +46,7 @@
         "build:push": "npm run build && git add . && git commit -m 'build' && git push",
         "lint": "eslint src --ext ts && tsc --noEmit",
         "format": "prettier --write .",
-        "postinstall": "npm run build"
+        "prepare": "npm run build"
     },
     "devDependencies": {
         "@types/ini": "^1.3.31",
