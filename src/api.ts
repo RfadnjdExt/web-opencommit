@@ -205,6 +205,7 @@ class OpenAi {
 
             return message?.content;
         } catch (error) {
+            console.log(error);
             outro(`${chalk.red("✖")} ${JSON.stringify(params)}`);
 
             const err = error as Error;
