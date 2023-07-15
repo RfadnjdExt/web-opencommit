@@ -26,7 +26,8 @@
     "author": "https://github.com/di-sukharev",
     "license": "MIT",
     "files": [
-        "*"
+        "./src/",
+        "./esbuild.config.js"
     ],
     "release": {
         "branches": [
