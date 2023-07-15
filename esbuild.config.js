@@ -13,9 +13,9 @@ const buildOptions = {
 
 try {
     esbuild.buildSync(buildOptions);
-    fs.copyFileSync(
-        "./src/chat_api_interaction.js",
-        "./out/chat_api_interaction.js"
+    fs.writeFileSync(
+        "./out/chat_api_interaction.js",
+        fs.readFileSync("./src/chat_api_interaction.js")
     );
 } catch (err) {
     console.error("An error occurred during build or file copy:", err);
